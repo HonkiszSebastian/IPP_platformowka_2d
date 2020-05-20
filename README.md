@@ -16,3 +16,10 @@ Cele poboczne:
  * Dodanie efektow dzwiekowych
  * Dodatkowe bonusy (np. lepsze skoki)
  
+ --- Sterowanie ---
+ 
+ * a - lewo
+ * d - prawo
+ * w - skok 
+    * skok podwójny --> należy nacisnąć drugi raz 'w' po ~ pół sekundzie od wyskoku
+ * s - kucanie // jeszcze nie dodane
