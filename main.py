@@ -343,7 +343,6 @@ while running:
     if bonus > 3000:
         bonus = 0
         boost += 1
-    print(bonus)
 
 
     #wyswietlenie zasobow
