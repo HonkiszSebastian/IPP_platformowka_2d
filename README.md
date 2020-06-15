@@ -22,4 +22,4 @@ Cele poboczne:
  * d - prawo
  * w - skok 
     * skok podwójny --> należy nacisnąć drugi raz 'w' po ~ pół sekundzie od wyskoku
- * s - kucanie // jeszcze nie dodane
+ * spacja - boost
