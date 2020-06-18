@@ -25,6 +25,7 @@ typ_plat = 0
 #zmienne lawy
 lava_y = resolution[1] + 250
 ldp = 0
+ldp2 = resolution[1]
 
 #punkty
 wynik = 0
@@ -48,3 +49,7 @@ prawo = True
 przegrana = False
 pomocnicza = False
 wycisz = True
+
+pause = False
+
+nietoperz = True

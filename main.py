@@ -27,9 +27,32 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.x = self.x
         self.rect.y = self.y
 
-          
+#bloki
+class Bloki(pygame.sprite.Sprite):
+    def __init__(self, x, y, szerokosc, wysokosc):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface((szerokosc, wysokosc))
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.image.fill((0,0,0))
+
+class Kula(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.k = pygame.image.load('images/KO.png')
+        self.rect = self.k.get_rect()
+        self.x = 0
+        self.y = 610
+        self.predkosc_x = 0
+        self.predkosc_y = 0
+        self.rect.x = self.x
+        self.rect.y = self.y
+    
 player = Player()
 bat_1 = Enemy()
+k1 = Kula()
+k2 = Kula()
 
 screen = pygame.display.set_mode(resolution)
 pygame.display.set_caption('* Luci Jump *')
@@ -58,13 +81,13 @@ def enemy_pos():
 
     if delta_x1 > 0:
         bat_1.predkosc_x -= bat_1.predkosc
-        if hp%2 ==0:
+        if nietoperz == True:
             bat_1.bat = pygame.image.load('images/bat_2l.png')
         else:
             bat_1.bat = pygame.image.load('images/bat_l.png')
     elif delta_x1 < 0:
         bat_1.predkosc_x += bat_1.predkosc
-        if hp%2 ==0:
+        if nietoperz == True:
             bat_1.bat = pygame.image.load('images/bat_2r.png')
         else:
             bat_1.bat = pygame.image.load('images/bat_r.png')
@@ -95,6 +118,38 @@ def enemy_pos():
 def position_lava():
     screen.blit(lava, (0, lava_y))
     screen.blit(lava_pos, (0, lava_y-550))
+
+#pozycja kuli 
+def kula_pozycja(y, g):
+
+    if k1.y >= 1200:
+        k1.y = 600 + y
+        k1.x = (random.randrange(0, 400, 1))
+        k1.predkosc_y = -(random.randrange(200, 300, 1))/40
+        k1.predkosc_x = ((random.randrange(100, 300, 1))/100) - 1.5
+    
+    if k2.y >= 6000:
+        k2.y = 600 + y
+        k2.x = (random.randrange(0, 400, 1))
+        k2.predkosc_y = -(random.randrange(250, 400, 1))/40
+        k2.predkosc_x = ((random.randrange(100, 300, 1))/100) - 1.5
+
+    k1.x = k1.x + k1.predkosc_x
+    k1.y = k1.y + k1.predkosc_y
+    k1.predkosc_y = k1.predkosc_y + g
+
+    k2.x = k2.x + k2.predkosc_x
+    k2.y = k2.y + k2.predkosc_y
+    k2.predkosc_y = k2.predkosc_y + g
+
+    k1.rect.x = k1.x
+    k1.rect.y = k1.y
+
+    k2.rect.x = k2.x
+    k2.rect.y = k2.y
+
+    screen.blit(k1.k, (k1.x,k1.y))
+    screen.blit(k2.k, (k2.x,k2.y))
 
 #wyswietlanie serduszek i boosta
 def wyswietlanie_hp(hp, resolution):
@@ -145,15 +200,6 @@ def plat_8():
 def plat_9():
     p9.image.fill((0,33,19)) 
 
-#bloki
-class Bloki(pygame.sprite.Sprite):
-    def __init__(self, x, y, szerokosc, wysokosc):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((szerokosc, wysokosc))
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
-        self.image.fill((0,0,0))
         
 #grupy i bloki
 p1 = Bloki((random.randrange(5, resolution[0], 1))-105, resolution[1]-80, 100, 3)
@@ -168,13 +214,15 @@ p9 = Bloki((random.randrange(5, resolution[0], 1))-100, -500, 50, 3)
 
 platformy = pygame.sprite.Group()
 nietopyrki = pygame.sprite.Group()
+kule = pygame.sprite.Group()
 
 platformy.add(p1, p2, p3, p4, p5, p6, p7, p8, p9)
 nietopyrki.add(bat_1)
+kule.add(k1, k2)
 
 sprity = pygame.sprite.Group()
 
-sprity.add(player,bat_1, p1, p2, p3, p4, p5, p6, p7, p8, p9)
+sprity.add(player,bat_1, k1, k2, p1, p2, p3, p4, p5, p6, p7, p8, p9)
 
 #clock
 clock = pygame.time.Clock()
@@ -216,6 +264,8 @@ while running:
         przesuniecie = 2000
         lava_y += abs(player.player_speed_y)
         bat_1.y += abs(player.player_speed_y)
+        k1.y += abs(player.player_speed_y)
+        k2.y += abs(player.player_speed_y)
         ruch = True
         wynik += abs(player.player_speed_y) 
         for i in platformy:
@@ -224,11 +274,30 @@ while running:
     #kolizje
     kolizja = pygame.sprite.spritecollide(player, platformy, False)
     kolizja2 = pygame.sprite.spritecollide(player, nietopyrki, False)
+    kolizja3 = pygame.sprite.spritecollide(player, kule, False)
+
+    if kolizja3:
+        k1.x = -1000
+        k2.x = -1000
+        hp -= 1
 
     if kolizja2:
         hp -= 1
         bat_1.x = (random.randrange(0, resolution[0], 1))
         bat_1.y = (random.randrange(0, 500, 1))-600
+        if nietoperz == True:
+            nietoperz = False
+        else:
+            nietoperz = True
+
+    #nietoperz w lavie
+    if (bat_1.y+15) >= lava_y:
+        bat_1.x = (random.randrange(0, resolution[0], 1))
+        bat_1.y = (random.randrange(0, 500, 1))-600
+        if nietoperz == True:
+            nietoperz = False
+        else:
+            nietoperz = True
     
     if kolizja and (player.player_speed_y >= 0):
         player.player_speed_y = 0
@@ -298,7 +367,12 @@ while running:
                     if boost > 0:
                         boost -=1
                         player.player_speed_y = -7
- 
+                if event.key == pygame.K_p:
+                    if pause == True:
+                        pause = False
+                    else:
+                        pause = True
+
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
@@ -315,9 +389,10 @@ while running:
     odleglosc = lava_y - (player.y + player.rect[3]) 
 
     if przegrana == False:
-        lava_y -= (0.8 + punkty/1000 + odleglosc/1000)
+        lava_y -= (0.65 + punkty/1000 + odleglosc/1000)
     ldp = lava_y - resolution[1]
     ldp = round(ldp, 0)
+    ldp2 = ldp
     if ldp < 0:
         ldp = 0
 
@@ -334,6 +409,8 @@ while running:
         wynik = abs(player.y-resolution[1]-40)
     punkty = wynik/10
     punkty = round(punkty,0)
+
+    kula_pozycja(ldp2, g)
 
     position_lava()
     napisy(text_pkt, text_lava, text_rekord, resolution)
@@ -356,9 +433,17 @@ while running:
         hp = 0
         for i in platformy:
             i.kill()
-            bat_1.kill()
+        bat_1.kill()
+        k1.kill()
+        k2.kill()
+
     if hp <= 0:
         przegrana = True
+        for i in platformy:
+            i.kill()
+        bat_1.kill()
+        k1.kill()
+        k2.kill()
 
     if przegrana == True:
         screen.blit(text_przegrana, (2, resolution[1]/2-30))
@@ -367,7 +452,6 @@ while running:
             print('Wynik koncowy: ', punkty)
             plik(punkty, best)
             pomocnicza = True
-
     pygame.display.flip()        
 
 pygame.quit()
