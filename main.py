@@ -163,6 +163,8 @@ def wyswietlanie_boost(b, resolution):
 #napisy
 def napisy(text_pkt, text_lava, text_rekord, resolution):
     screen.blit(tablica, (0, 0))
+    if wycisz == False:
+        screen.blit(m_t, (150, 38))
 
     screen.blit(text_pkt_b, (1, -1))
     screen.blit(text_pkt, (2, 0))
@@ -439,11 +441,10 @@ while running:
 
     if hp <= 0:
         przegrana = True
-        for i in platformy:
-            i.kill()
         bat_1.kill()
         k1.kill()
         k2.kill()
+        
 
     if przegrana == True:
         screen.blit(text_przegrana, (2, resolution[1]/2-30))

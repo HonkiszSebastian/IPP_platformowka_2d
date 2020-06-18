@@ -41,6 +41,7 @@ tablica = pygame.image.load('images/tablica.png')
 bat_r = pygame.image.load('images/bat_l.png')
 bat_l = pygame.image.load('images/bat_r.png')
 boost_img = pygame.image.load('images/boost.png')
+m_t = pygame.image.load('images/mute.png')
 
 luci_r = pygame.image.load('images/luciR.png')
 luci_l = pygame.image.load('images/luciL.png')
